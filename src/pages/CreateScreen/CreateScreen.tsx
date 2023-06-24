@@ -2,20 +2,34 @@ import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { delCurrentScreen } from "../../redux/screenSlice";
-import { CheckboxTemplate, GeneratorQuestion } from "../../components";
+import {
+  delCurrentScreen,
+  removeScreens,
+  setIdNewScreen,
+} from "../../redux/screenSlice";
+import {
+  CheckboxTemplate,
+  GeneratorQuestion,
+  InputTemplate,
+  RangeTemplate,
+} from "../../components";
 import { setDefaultQuestion } from "../../redux/questionSlice";
 import {
   closeGeneratorQuestion,
+  openGeneratorQuestion,
   setScreenId,
-  toggleGenerationQuestion,
 } from "../../redux/currentScreenSlice";
 import { TypeQuestion } from "../../dto";
 import { Button } from "@consta/uikit/Button";
 import { IconTrash } from "@consta/uikit/IconTrash";
 import { Text } from "@consta/uikit/Text";
 import style from "./CreateScreen.module.scss";
-import { Layout } from '@consta/uikit/Layout';
+import { Layout } from "@consta/uikit/Layout";
+import { FieldGroup } from "@consta/uikit/FieldGroup";
+import { Tabs } from "@consta/uikit/Tabs";
+import { IconAdd } from "@consta/uikit/IconAdd";
+import { LOCAL_STORAGE_VALUE } from "../../env/const";
+import { TypeModeComponent } from "../../dto/TypeModeComponent";
 
 export function CreateScreen() {
   const params = useParams();
@@ -31,11 +45,13 @@ export function CreateScreen() {
   const generatorQuestion = useSelector(
     (state: RootState) => state.currentScreen.generatorQuestion
   );
+  const screens = useSelector((state: RootState) => state.screen);
 
-  console.log(JSON.stringify(screen));
+  const onAddNewScreen = () => {
+    dispatch(setIdNewScreen(screens.length + 1));
+  };
 
   useEffect(() => {
-    console.log(`params.id=${params.id} currentScreenId=${currentScreenId}`);
     if (params.id) {
       if (+params.id !== currentScreenId) {
         dispatch(setDefaultQuestion());
@@ -51,49 +67,107 @@ export function CreateScreen() {
   };
 
   const onCreateQuestion = () => {
-    dispatch(toggleGenerationQuestion());
+    if (generatorQuestion) {
+      dispatch(closeGeneratorQuestion());
+      dispatch(setDefaultQuestion());
+    } else {
+      dispatch(openGeneratorQuestion());
+    }
+  };
+
+  const onSaveScreens = () => {
+    localStorage.setItem(LOCAL_STORAGE_VALUE, JSON.stringify(screens));
+    dispatch(removeScreens());
   };
 
   if (screen === undefined) {
     throw new Error("Нет такой страницы");
   }
   return (
-    <div className={style.createScreen}>
+    <div>
       <Layout>
-        <Text size="2xl">Страница №{screen?.id}</Text>
-        {id > 1 ? (
-          <Button
-            onClick={onDelScreen}
-            label="Удалить страницу"
-            view="secondary"
-            iconRight={IconTrash}
-            onlyIcon
-            iconSize="m"
-            size="s"
-            className={style.createScreen_delButton}
+        <FieldGroup form="round" size="m" style={{ width: "100%" }}>
+          <Tabs
+            items={screens}
+            value={screens[currentScreenId - 1]}
+            view="bordered"
+            onChange={(e) => {
+              navigate(`/createScreen/${e.value.id}`);
+            }}
+            getItemLabel={(item) => item.id}
           />
-        ) : (
-          ""
-        )}
+          <Button
+            label="Добавить"
+            iconRight={IconAdd}
+            onlyIcon
+            size="s"
+            onClick={onAddNewScreen}
+          />
+        </FieldGroup>
+        <Button
+          label="Опубликовать страницы"
+          style={{ marginLeft: "20px" }}
+          onClick={onSaveScreens}
+        />
       </Layout>
-      <br />
-      {screen.questions.map((question) => {
-        switch (question.type) {
-          case TypeQuestion.Checkbox:
-            return (
-              <div key={question.guid}>
-                <CheckboxTemplate {...question} />
-                <br />
-              </div>
-            );
+      <div style={{ marginTop: "20px" }}>
+        <Layout>
+          <Text size="2xl" view="brand">
+            Страница №{screen?.id}
+          </Text>
+          {id > 1 ? (
+            <Button
+              onClick={onDelScreen}
+              label="Удалить страницу"
+              view="secondary"
+              iconRight={IconTrash}
+              onlyIcon
+              iconSize="m"
+              size="s"
+              className={style.createScreen_delButton}
+            />
+          ) : (
+            ""
+          )}
+        </Layout>
+        {screen.questions.map((question) => {
+          switch (question.type) {
+            case TypeQuestion.Checkbox:
+              return (
+                <div key={question.guid}>
+                  <CheckboxTemplate
+                    {...question}
+                    mode={TypeModeComponent.Dev}
+                  />
+                  {/* <br /> */}
+                </div>
+              );
+            case TypeQuestion.Range:
+              return (
+                <div key={question.guid}>
+                  <RangeTemplate {...question} mode={TypeModeComponent.Dev} />
+                  {/* <br /> */}
+                </div>
+              );
+            case TypeQuestion.Input:
+              return (
+                <div key={question.guid}>
+                  <InputTemplate {...question} mode={TypeModeComponent.Dev} />
+                </div>
+              );
 
-          default:
-            return <></>;
-        }
-      })}
-      <Button onClick={onCreateQuestion} label="Создать вопрос" size="s" />
-      {generatorQuestion ? <GeneratorQuestion /> : null}
-      <br />
+            default:
+              return <></>;
+          }
+        })}
+        <Button
+          onClick={onCreateQuestion}
+          label={generatorQuestion ? "Очистить форму" : "Создать вопрос"}
+          size="s"
+          style={{ margin: "20px 0" }}
+        />
+        {generatorQuestion ? <GeneratorQuestion /> : null}
+      </div>
     </div>
   );
 }

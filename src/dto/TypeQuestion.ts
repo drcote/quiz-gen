@@ -1,5 +1,7 @@
-export enum TypeQuestion{
-  Input='поле ввода',
-  Checkbox='поле выбора',
-  None='Тип ответа '
+export enum TypeQuestion {
+  None = "Нет ответа ",
+  Input = "Поле ввода",
+  Checkbox = "Множественный выбор",
+  // Radiobutton = "Одиночный выбор",
+  Range = "Выбор диапазона",
 }

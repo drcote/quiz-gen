@@ -1,64 +1,81 @@
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import {
-  delOption,
-  setDefaultOption,
+  delOptionList,
+  setDefaultOptionList,
   setCorrectAnswer,
-  setOptionValue,
+  setOptionListValue,
 } from "../../redux/questionSlice";
+import { IOptionList } from "../../dto";
+import { Button } from "@consta/uikit/Button";
+import { TextField } from "@consta/uikit/TextField";
+import { Checkbox } from "@consta/uikit/Checkbox";
+import { Layout } from "@consta/uikit/Layout";
 
 export function CheckboxQuestion() {
   const dispatch = useDispatch<AppDispatch>();
-  const options = useSelector((state: RootState) => state.question.options);
+  const options = useSelector(
+    (state: RootState) => state.question.options as IOptionList[]
+  );
   const correctAnswer = useSelector(
     (state: RootState) => state.question.correctAnswer
   );
 
   return (
-    <div>
+    <Layout direction="column">
       {options?.map((item) => (
         <CheckboxGroup
           key={item.guid}
+          guid={item.guid}
           value={item.value}
           checked={item.guid === correctAnswer}
-          onDelEl={() => dispatch(delOption(item.guid))}
-          onChangeValue={(value) => dispatch(setOptionValue({guid:item.guid, value:value}))}
-          onChangeStatus={()=>dispatch(setCorrectAnswer(item.guid))}
+          onDelEl={() => dispatch(delOptionList(item.guid))}
+          onChangeValue={(value) =>
+            dispatch(setOptionListValue({ guid: item.guid, value: value }))
+          }
+          onChangeStatus={() => dispatch(setCorrectAnswer(item.guid))}
         />
       ))}
       <br />
-      <button onClick={() => dispatch(setDefaultOption())}>
-        Добавить ответ
-      </button>
-    </div>
+      <Layout>
+        <Button
+          onClick={() => dispatch(setDefaultOptionList())}
+          label="Добавить ответ"
+          size="s"
+        />
+      </Layout>
+    </Layout>
   );
 }
 
 interface ICheckboxGroup {
   value: string;
   checked: boolean;
+  guid: string;
   onDelEl: () => void;
   onChangeValue: (value: string) => void;
   onChangeStatus: () => void;
 }
 
 function CheckboxGroup(props: ICheckboxGroup) {
-  const { value, checked, onDelEl, onChangeValue, onChangeStatus } =
+  const { value, checked, guid, onDelEl, onChangeValue, onChangeStatus } =
     props;
   return (
-    <>
-      <input
+    <Layout style={{ marginTop: "20px" }}>
+      <TextField
         type="text"
+        id={guid}
         value={value}
-        onChange={(e) => onChangeValue(e.target.value)}
+        onChange={(e) => onChangeValue(e.value ? e.value : "")}
+        style={{ marginRight: "10px" }}
+        size="s"
       />
-      <input
-        type="checkbox"
+      <Checkbox
         checked={checked}
         onChange={onChangeStatus}
+        style={{ marginRight: "10px" }}
       />
-      <button onClick={onDelEl}>Удалить</button>
-      <br />
-    </>
+      <Button onClick={onDelEl} label="Удалить" size="s" />
+    </Layout>
   );
 }

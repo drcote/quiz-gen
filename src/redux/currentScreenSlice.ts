@@ -1,9 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { ICurrentScreen } from "../dto";
+import { TypeScreen } from "../dto/TypeScreen";
 
 const initialState: ICurrentScreen = {
   screenId: 0,
   generatorQuestion: false,
+  typeScreen: TypeScreen.Test,
+  pageId: 0,
+  totalPages: 0,
 };
 
 const currentScreenSlice = createSlice({
@@ -22,6 +26,20 @@ const currentScreenSlice = createSlice({
     setScreenId: (state, action) => {
       state.screenId = action.payload;
     },
+    setTypeScreen: (state, action) => {
+      state.typeScreen = action.payload;
+    },
+    nextPage: (state) => {
+      state.pageId = state.pageId + 1;
+    },
+    prevPage: (state) => {
+      if (state.pageId !== 0) {
+        state.pageId = state.pageId - 1;
+      }
+    },
+    setTotalPages: (state, action) => {
+      state.totalPages = action.payload;
+    },
   },
 });
 
@@ -34,4 +52,8 @@ export const {
   openGeneratorQuestion,
   toggleGenerationQuestion,
   setScreenId,
+  setTypeScreen,
+  nextPage,
+  prevPage,
+  setTotalPages,
 } = actions;

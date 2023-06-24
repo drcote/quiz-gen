@@ -1,14 +1,23 @@
-import { TypeQuestion } from ".";
+import { TypeQuestion, ViewRange } from ".";
 
 export interface IQuestion {
   guid: string;
   description: string;
   type: TypeQuestion;
-  options: IOptionQuestion[] | null;
+  options: IOptionList[] | IOptionRange | null;
   correctAnswer: string;
 }
 
-export interface IOptionQuestion {
+export interface IOptionList {
   guid: string;
   value: string;
+}
+
+export interface IOptionRange {
+  step: number | null;
+  valueFrom: number;
+  view: ViewRange;
+  min?: number | null;
+  max?: number | null;
+  valueTo?: number;
 }

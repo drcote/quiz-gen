@@ -1,12 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { App } from "./components";
-import { CreateScreen, ErrorPage } from "./pages";
+import { CreateScreen, ErrorPage, Screen } from "./pages";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./redux/store";
-import { Theme, presetGpnDefault } from '@consta/uikit/Theme';
-import {ResponsesNothingFound} from '@consta/uikit/ResponsesNothingFound';
+import { Theme, presetGpnDefault } from "@consta/uikit/Theme";
+import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +19,11 @@ const router = createBrowserRouter([
         element: <CreateScreen />,
         errorElement: <ResponsesNothingFound />,
       },
+      {
+        path: "screen",
+        element: <Screen />,
+        errorElement: <ResponsesNothingFound />,
+      },
     ],
   },
 ]);
@@ -29,9 +34,11 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Theme preset={presetGpnDefault}>
-    <Provider store={store}>
-      <RouterProvider router={router} />
-    </Provider>
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>
     </Theme>
   </React.StrictMode>
 );
+
+
