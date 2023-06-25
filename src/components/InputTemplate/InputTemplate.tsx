@@ -10,6 +10,7 @@ import { removeQuestion } from "../../redux/screenSlice";
 import { RootState } from "../../redux/store";
 import { TextField } from "@consta/uikit/TextField";
 import { TypeModeComponent } from "../../dto/TypeModeComponent";
+import { setAnswer } from "../../redux/answersSlice";
 
 interface IInputTemplate extends IQuestion {
   mode: TypeModeComponent;
@@ -21,9 +22,14 @@ export function InputTemplate(props: IInputTemplate) {
   const currentScreenId = useSelector(
     (state: RootState) => state.currentScreen.screenId
   );
+  const value = useSelector(
+    (state: RootState) =>
+      state.answersSlice.find((item) => item.guidQuestion === guid)?.value
+  );
+
   if (mode === TypeModeComponent.Prod) {
     return (
-      <Layout >
+      <Layout style={{ margin: "20px 0 0 20px" }}>
         <Text
           view="linkMinor"
           size="xl"
@@ -37,7 +43,13 @@ export function InputTemplate(props: IInputTemplate) {
         >
           {description}
         </Text>
-        <TextField size="s" />
+        <TextField
+          size="s"
+          value={value ? value as string : ""}
+          onChange={(e) =>
+            dispatch(setAnswer({ guidQuestion: guid, value: e.value }))
+          }
+        />
       </Layout>
     );
   }

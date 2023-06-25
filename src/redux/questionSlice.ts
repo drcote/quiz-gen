@@ -22,6 +22,7 @@ const questionSlice = createSlice({
         case TypeQuestion.Checkbox:
           state.options = [];
           break;
+
         case TypeQuestion.Range:
           state.options = {
             valueFrom: 0,
@@ -30,6 +31,10 @@ const questionSlice = createSlice({
             min: 0,
             max: 10,
           };
+          break;
+
+        case TypeQuestion.Choice:
+          state.options = [];
           break;
 
         default:

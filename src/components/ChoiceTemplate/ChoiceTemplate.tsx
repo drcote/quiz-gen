@@ -9,13 +9,13 @@ import { AppDispatch, RootState } from "../../redux/store";
 import { removeQuestion } from "../../redux/screenSlice";
 import { TypeModeComponent } from "../../dto/TypeModeComponent";
 import { setAnswer } from "../../redux/answersSlice";
-import { CheckboxGroup } from "@consta/uikit/CheckboxGroup";
+import { ChoiceGroup } from "@consta/uikit/ChoiceGroup";
 
-interface ICheckboxTemplate extends IQuestion {
+interface IChoiceTemplate extends IQuestion {
   mode: TypeModeComponent;
 }
 
-export function CheckboxTemplate(props: ICheckboxTemplate) {
+export function ChoiceTemplate(props: IChoiceTemplate) {
   const { description, options, guid, mode } = props;
   const dispatch = useDispatch<AppDispatch>();
 
@@ -34,15 +34,16 @@ export function CheckboxTemplate(props: ICheckboxTemplate) {
         <Text view="linkMinor" size="xl" weight="bold">
           {description}
         </Text>
-        <CheckboxGroup
+        <ChoiceGroup
           items={options as IOptionList[]}
           getItemLabel={(item) => item.value}
           onChange={(e) => {
-            dispatch(setAnswer({ guidQuestion: guid, value: e.value }));
+            dispatch(setAnswer({ guidQuestion: guid, value: e.value.value }));
           }}
-          name={`name_${guid}`}
-          size="l"
-          value={value ? (value as IOptionList[]) : undefined}
+          name={`choice_${guid}`}
+          value={{ guid: "", value: value ? value as string : "" }}
+          multiple={false}
+          view="primary"
         />
       </div>
     );
@@ -67,10 +68,11 @@ export function CheckboxTemplate(props: ICheckboxTemplate) {
           />
         </Layout>
       </Layout>
-      <CheckboxGroup
+      <ChoiceGroup
         items={options as IOptionList[]}
         getItemLabel={(item) => item.value}
         onChange={() => {}}
+        name={`choice_${guid}`}
       />
     </Card>
   );

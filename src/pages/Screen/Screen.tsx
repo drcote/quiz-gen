@@ -8,7 +8,7 @@ import { LOCAL_STORAGE_VALUE } from "../../env/const";
 import { IScreen } from "../../dto";
 import { PageScreen } from "../PageScreen/PageScreen";
 import { RootState } from "../../redux/store";
-import { ReactElement } from "react";
+import { ReactElement, useEffect } from "react";
 
 export function Screen() {
   const navigate = useNavigate();

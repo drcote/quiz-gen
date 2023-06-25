@@ -1,5 +1,5 @@
 import { TypeQuestion } from "../../dto";
-import { CheckboxQuestion, RangeQuestion } from "..";
+import { CheckboxQuestion, ChoiceQuestion, RangeQuestion } from "..";
 import { AppDispatch, RootState } from "../../redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -45,9 +45,15 @@ export function GeneratorQuestion() {
     case TypeQuestion.Checkbox:
       bodyQuestion = <CheckboxQuestion />;
       break;
+
     case TypeQuestion.Range:
       bodyQuestion = <RangeQuestion />;
       break;
+
+    case TypeQuestion.Choice:
+      bodyQuestion = <ChoiceQuestion />;
+      break;
+
     default:
       bodyQuestion = null;
       break;
@@ -56,8 +62,17 @@ export function GeneratorQuestion() {
     <Layout>
       <Layout flex={1}>
         <Card verticalSpace="l" horizontalSpace="l" form="round">
-          <Layout style={{marginBottom:'20px'}}>
-              <Text style={{display:'flex', alignItems:'center',justifyContent:'center', marginRight:'20px'}}>Заголовок вопроса</Text>
+          <Layout style={{ marginBottom: "20px" }}>
+            <Text
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: "20px",
+              }}
+            >
+              Заголовок вопроса
+            </Text>
             <TextField
               type="text"
               id="description"
@@ -76,9 +91,7 @@ export function GeneratorQuestion() {
             size="s"
           />
           {bodyQuestion}
-          <Layout>
-            
-          </Layout>
+          <Layout></Layout>
           {type !== TypeQuestion.None ? (
             <Button
               onClick={onSaveQuestion}

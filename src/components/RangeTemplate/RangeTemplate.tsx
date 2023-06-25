@@ -10,6 +10,7 @@ import { RootState } from "../../redux/store";
 import { Slider } from "@consta/uikit/Slider";
 import { PropView } from "@consta/uikit/__internal__/src/components/Slider/helper";
 import { TypeModeComponent } from "../../dto/TypeModeComponent";
+import { setAnswer } from "../../redux/answersSlice";
 
 interface IRangeTemplate extends IQuestion {
   mode: TypeModeComponent;
@@ -24,7 +25,11 @@ export function RangeTemplate(props: IRangeTemplate) {
   const optionsSlider: IOptionRange = options
     ? (options as IOptionRange)
     : { valueFrom: 0, view: ViewRange.Default, step: 1, min: 0, max: 10 };
-  let value: number = optionsSlider.valueFrom;
+
+  const value = useSelector(
+    (state: RootState) =>
+      state.answersSlice.find((item) => item.guidQuestion === guid)?.value
+  );
 
   let view: PropView = "default";
   switch (optionsSlider.view) {
@@ -41,21 +46,25 @@ export function RangeTemplate(props: IRangeTemplate) {
 
   if (mode === TypeModeComponent.Prod) {
     return (
-      <Layout direction="column">
+      <div style={{ margin: "20px 0 0 20px" }}>
         <Text view="linkMinor" size="xl" weight="bold">
           {description}
         </Text>
-        <Slider
-          label={`Значение ${value}`}
-          onChange={() => {}}
-          value={value}
-          step={optionsSlider.step ? optionsSlider.step : 1}
-          view={view}
-          withTooltip
-          min={optionsSlider.min ? optionsSlider.min : undefined}
-          max={optionsSlider.max ? optionsSlider.max : undefined}
-        />
-      </Layout>
+        <div style={{ maxWidth: "400px" }}>
+          <Slider
+            label={`Значение ${value}`}
+            onChange={(e) => {
+              dispatch(setAnswer({ guidQuestion: guid, value: e.value }));
+            }}
+            value={value ? +value : 0}
+            step={optionsSlider.step ? optionsSlider.step : 1}
+            view={view}
+            withTooltip
+            min={optionsSlider.min ? optionsSlider.min : undefined}
+            max={optionsSlider.max ? optionsSlider.max : undefined}
+          />
+        </div>
+      </div>
     );
   }
 
@@ -78,16 +87,18 @@ export function RangeTemplate(props: IRangeTemplate) {
           />
         </Layout>
       </Layout>
-      <Slider
-        label={`Значение ${value}`}
-        onChange={() => {}}
-        value={value}
-        step={optionsSlider.step ? optionsSlider.step : 1}
-        view={view}
-        withTooltip
-        min={optionsSlider.min ? optionsSlider.min : undefined}
-        max={optionsSlider.max ? optionsSlider.max : undefined}
-      />
+      <div style={{ maxWidth: "400px" }}>
+        <Slider
+          label={`Значение ${value}`}
+          onChange={() => {}}
+          value={0}
+          step={optionsSlider.step ? optionsSlider.step : 1}
+          view={view}
+          withTooltip
+          min={optionsSlider.min ? optionsSlider.min : undefined}
+          max={optionsSlider.max ? optionsSlider.max : undefined}
+        />
+      </div>
     </Card>
   );
 }
