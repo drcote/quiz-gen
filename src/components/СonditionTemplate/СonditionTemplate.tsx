@@ -10,13 +10,14 @@ import { removeQuestion } from "../../redux/screenSlice";
 import { TypeModeComponent } from "../../dto/TypeModeComponent";
 import { setAnswer } from "../../redux/answersSlice";
 import { ChoiceGroup } from "@consta/uikit/ChoiceGroup";
+import { Badge } from "@consta/uikit/Badge";
 
 interface IChoiceTemplate extends IQuestion {
   mode: TypeModeComponent;
 }
 
-export function ChoiceTemplate(props: IChoiceTemplate) {
-  const { description, options, guid, mode } = props;
+export function СonditionTemplate(props: IChoiceTemplate) {
+  const { description, options, guid, mode, parentGuid } = props;
   const dispatch = useDispatch<AppDispatch>();
 
   const currentScreenId = useSelector(
@@ -26,6 +27,15 @@ export function ChoiceTemplate(props: IChoiceTemplate) {
   const value = useSelector(
     (state: RootState) =>
       state.answersSlice.find((item) => item.guidQuestion === guid)?.value
+  );
+
+  const parent = useSelector((state: RootState) =>
+    state.parentQuestionSlice.items.find((item) => item.guid === parentGuid)
+  );
+  const parentGroup = useSelector((state: RootState) =>
+    state.parentQuestionSlice.groups.find(
+      (item) => item.guid === parent?.groupGuid
+    )
   );
 
   if (mode === TypeModeComponent.Prod) {
@@ -41,7 +51,7 @@ export function ChoiceTemplate(props: IChoiceTemplate) {
             dispatch(setAnswer({ guidQuestion: guid, value: e.value.value }));
           }}
           name={`choice_${guid}`}
-          value={{ guid: "", value: value ? value as string : "" }}
+          value={{ guid: "", value: value ? (value as string) : "" }}
           multiple={false}
           view="primary"
         />
@@ -53,6 +63,14 @@ export function ChoiceTemplate(props: IChoiceTemplate) {
     <Card verticalSpace="xs" horizontalSpace="xs" style={{ margin: "10px 0" }}>
       <Layout>
         <Layout flex={1}>
+          {parent && parentGroup ? (
+            <Badge
+              status="warning"
+              size="xs"
+              label={`${parentGroup.label} | ${parent.label}`}
+              style={{ marginRight: "20px" }}
+            />
+          ) : null}
           <Text view="linkMinor" size="xl" weight="bold">
             {description}
           </Text>

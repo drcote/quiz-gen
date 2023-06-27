@@ -9,7 +9,7 @@ import {
 } from "../../redux/screenSlice";
 import {
   CheckboxTemplate,
-  ChoiceTemplate,
+  СonditionTemplate,
   GeneratorQuestion,
   InputTemplate,
   RangeTemplate,
@@ -155,10 +155,10 @@ export function CreateScreen() {
                 </div>
               );
 
-              case TypeQuestion.Choice:
+              case TypeQuestion.Сondition:
               return(
                 <div key={question.guid}>
-                  <ChoiceTemplate {...question} mode={TypeModeComponent.Dev} />
+                  <СonditionTemplate {...question} mode={TypeModeComponent.Dev} />
                 </div>
               )
 

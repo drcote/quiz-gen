@@ -11,13 +11,14 @@ import { RootState } from "../../redux/store";
 import { TextField } from "@consta/uikit/TextField";
 import { TypeModeComponent } from "../../dto/TypeModeComponent";
 import { setAnswer } from "../../redux/answersSlice";
+import { Badge } from "@consta/uikit/Badge";
 
 interface IInputTemplate extends IQuestion {
   mode: TypeModeComponent;
 }
 
 export function InputTemplate(props: IInputTemplate) {
-  const { description, guid, mode } = props;
+  const { description, guid, mode, parentGuid } = props;
   const dispatch = useDispatch();
   const currentScreenId = useSelector(
     (state: RootState) => state.currentScreen.screenId
@@ -25,6 +26,15 @@ export function InputTemplate(props: IInputTemplate) {
   const value = useSelector(
     (state: RootState) =>
       state.answersSlice.find((item) => item.guidQuestion === guid)?.value
+  );
+
+  const parent = useSelector((state: RootState) =>
+    state.parentQuestionSlice.items.find((item) => item.guid === parentGuid)
+  );
+  const parentGroup = useSelector((state: RootState) =>
+    state.parentQuestionSlice.groups.find(
+      (item) => item.guid === parent?.groupGuid
+    )
   );
 
   if (mode === TypeModeComponent.Prod) {
@@ -45,7 +55,7 @@ export function InputTemplate(props: IInputTemplate) {
         </Text>
         <TextField
           size="s"
-          value={value ? value as string : ""}
+          value={value ? (value as string) : ""}
           onChange={(e) =>
             dispatch(setAnswer({ guidQuestion: guid, value: e.value }))
           }
@@ -57,6 +67,14 @@ export function InputTemplate(props: IInputTemplate) {
     <Card verticalSpace="xs" horizontalSpace="xs" style={{ margin: "10px 0" }}>
       <Layout>
         <Layout flex={1}>
+          {parent && parentGroup ? (
+            <Badge
+              status="warning"
+              size="xs"
+              label={`${parentGroup.label} | ${parent.label}`}
+              style={{ marginRight: "20px" }}
+            />
+          ) : null}
           <Text
             view="linkMinor"
             size="xl"

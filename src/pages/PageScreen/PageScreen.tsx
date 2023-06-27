@@ -2,7 +2,7 @@ import { Layout } from "@consta/uikit/Layout";
 import { IScreen, TypeQuestion } from "../../dto";
 import {
   CheckboxTemplate,
-  ChoiceTemplate,
+  СonditionTemplate,
   InputTemplate,
   RangeTemplate,
 } from "../../components";
@@ -52,10 +52,10 @@ export function PageScreen(props: IScreen) {
               </div>
             );
 
-          case TypeQuestion.Choice:
+          case TypeQuestion.Сondition:
             return (
               <div key={question.guid}>
-                <ChoiceTemplate {...question} mode={TypeModeComponent.Prod} />
+                <СonditionTemplate {...question} mode={TypeModeComponent.Prod} />
               </div>
             );
 

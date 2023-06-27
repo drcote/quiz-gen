@@ -12,7 +12,7 @@ import { TextField } from "@consta/uikit/TextField";
 import { Checkbox } from "@consta/uikit/Checkbox";
 import { Layout } from "@consta/uikit/Layout";
 
-export function ChoiceQuestion() {
+export function СonditionQuestion() {
   const dispatch = useDispatch<AppDispatch>();
   const options = useSelector(
     (state: RootState) => state.question.options as IOptionList[]

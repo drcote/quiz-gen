@@ -8,6 +8,7 @@ const initialState: IQuestion = {
   description: "",
   options: null,
   correctAnswer: "",
+  parentGuid: null,
 };
 const questionSlice = createSlice({
   name: "question",
@@ -33,7 +34,7 @@ const questionSlice = createSlice({
           };
           break;
 
-        case TypeQuestion.Choice:
+        case TypeQuestion.Сondition:
           state.options = [];
           break;
 
@@ -73,6 +74,7 @@ const questionSlice = createSlice({
       state.type = TypeQuestion.None;
       state.correctAnswer = "";
       state.guid = uuid();
+      state.parentGuid = null;
     },
     setDefaultOptionList: (state) => {
       if (Array.isArray(state.options)) {
@@ -97,6 +99,9 @@ const questionSlice = createSlice({
     setOptionRangeValueTo: (state, action) => {
       (state.options as IOptionRange).valueTo = action.payload;
     },
+    setParent: (state, action) => {
+      state.parentGuid = action.payload;
+    },
   },
 });
 
@@ -119,4 +124,5 @@ export const {
   setOptionRangeStep,
   setOptionRangeValueFrom,
   setOptionRangeValueTo,
+  setParent,
 } = actions;

@@ -11,13 +11,14 @@ import { Slider } from "@consta/uikit/Slider";
 import { PropView } from "@consta/uikit/__internal__/src/components/Slider/helper";
 import { TypeModeComponent } from "../../dto/TypeModeComponent";
 import { setAnswer } from "../../redux/answersSlice";
+import { Badge } from "@consta/uikit/Badge";
 
 interface IRangeTemplate extends IQuestion {
   mode: TypeModeComponent;
 }
 
 export function RangeTemplate(props: IRangeTemplate) {
-  const { description, guid, options, mode } = props;
+  const { description, guid, options, mode, parentGuid } = props;
   const currentScreenId = useSelector(
     (state: RootState) => state.currentScreen.screenId
   );
@@ -29,6 +30,15 @@ export function RangeTemplate(props: IRangeTemplate) {
   const value = useSelector(
     (state: RootState) =>
       state.answersSlice.find((item) => item.guidQuestion === guid)?.value
+  );
+
+  const parent = useSelector((state: RootState) =>
+    state.parentQuestionSlice.items.find((item) => item.guid === parentGuid)
+  );
+  const parentGroup = useSelector((state: RootState) =>
+    state.parentQuestionSlice.groups.find(
+      (item) => item.guid === parent?.groupGuid
+    )
   );
 
   let view: PropView = "default";
@@ -72,6 +82,14 @@ export function RangeTemplate(props: IRangeTemplate) {
     <Card verticalSpace="xs" horizontalSpace="xs" style={{ margin: "10px 0" }}>
       <Layout>
         <Layout flex={1}>
+          {parent && parentGroup ? (
+            <Badge
+              status="warning"
+              size="xs"
+              label={`${parentGroup.label} | ${parent.label}`}
+              style={{ marginRight: "20px" }}
+            />
+          ) : null}
           <Text view="linkMinor" size="xl" weight="bold">
             {description}
           </Text>

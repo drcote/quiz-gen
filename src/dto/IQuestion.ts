@@ -4,6 +4,7 @@ export interface IQuestion {
   guid: string;
   description: string;
   type: TypeQuestion;
+  parentGuid: string | null;
   options: IOptionList[] | IOptionRange | null;
   correctAnswer: string;
 }

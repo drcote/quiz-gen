@@ -5,5 +5,5 @@ export * from './CheckboxTemplate/CheckboxTemplate';
 export * from './RangeQuestion/RangeQuestion';
 export * from './RangeTemplate/RangeTemplate';
 export * from './InputTemplate/InputTemplate';
-export * from './ChoiceQuestion/ChoiceQuestion';
-export * from './ChoiceTemplate/ChoiceTemplate';
+export * from './СonditionQuestion/СonditionQuestion';
+export * from './СonditionTemplate/СonditionTemplate';
