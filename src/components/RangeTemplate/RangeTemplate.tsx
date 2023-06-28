@@ -1,7 +1,7 @@
 import { Button } from "@consta/uikit/Button";
 import { Card } from "@consta/uikit/Card";
 import { Layout } from "@consta/uikit/Layout";
-import { IOptionRange, IQuestion, ViewRange } from "../../dto";
+import { IOptionList, IOptionRange, IQuestion, ViewRange } from "../../dto";
 import { Text } from "@consta/uikit/Text";
 import { IconClose } from "@consta/uikit/IconClose";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,6 +12,7 @@ import { PropView } from "@consta/uikit/__internal__/src/components/Slider/helpe
 import { TypeModeComponent } from "../../dto/TypeModeComponent";
 import { setAnswer } from "../../redux/answersSlice";
 import { Badge } from "@consta/uikit/Badge";
+import { v4 as uuid } from "uuid";
 
 interface IRangeTemplate extends IQuestion {
   mode: TypeModeComponent;
@@ -62,9 +63,14 @@ export function RangeTemplate(props: IRangeTemplate) {
         </Text>
         <div style={{ maxWidth: "400px" }}>
           <Slider
-            label={`Значение ${value}`}
+            label={`Значение ${value ? (value as IOptionList).value : ""}`}
             onChange={(e) => {
-              dispatch(setAnswer({ guidQuestion: guid, value: e.value }));
+              dispatch(
+                setAnswer({
+                  guidQuestion: guid,
+                  value: { guid: uuid(), value: e.value },
+                })
+              );
             }}
             value={value ? +value : 0}
             step={optionsSlider.step ? optionsSlider.step : 1}

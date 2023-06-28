@@ -1,5 +1,5 @@
 import React from "react";
-import { IQuestion } from "../../dto";
+import { IOptionList, IQuestion } from "../../dto";
 import { Card } from "@consta/uikit/Card";
 import { Layout } from "@consta/uikit/Layout";
 import { Button } from "@consta/uikit/Button";
@@ -12,6 +12,7 @@ import { TextField } from "@consta/uikit/TextField";
 import { TypeModeComponent } from "../../dto/TypeModeComponent";
 import { setAnswer } from "../../redux/answersSlice";
 import { Badge } from "@consta/uikit/Badge";
+import { v4 as uuid } from "uuid";
 
 interface IInputTemplate extends IQuestion {
   mode: TypeModeComponent;
@@ -55,9 +56,14 @@ export function InputTemplate(props: IInputTemplate) {
         </Text>
         <TextField
           size="s"
-          value={value ? (value as string) : ""}
+          value={value ? (value as IOptionList).value : ""}
           onChange={(e) =>
-            dispatch(setAnswer({ guidQuestion: guid, value: e.value }))
+            dispatch(
+              setAnswer({
+                guidQuestion: guid,
+                value: { guid: uuid(), value: e.value },
+              })
+            )
           }
         />
       </Layout>

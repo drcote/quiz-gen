@@ -48,10 +48,15 @@ export function СonditionTemplate(props: IChoiceTemplate) {
           items={options as IOptionList[]}
           getItemLabel={(item) => item.value}
           onChange={(e) => {
-            dispatch(setAnswer({ guidQuestion: guid, value: e.value.value }));
+            dispatch(
+              setAnswer({
+                guidQuestion: guid,
+                value: { value: e.value.value, guid: e.value.guid },
+              })
+            );
           }}
           name={`choice_${guid}`}
-          value={{ guid: "", value: value ? (value as string) : "" }}
+          value={value as IOptionList}
           multiple={false}
           view="primary"
         />

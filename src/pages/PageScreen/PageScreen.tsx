@@ -21,6 +21,17 @@ export function PageScreen(props: IScreen) {
     (state: RootState) => state.currentScreen.totalPages
   );
   const pageId = useSelector((state: RootState) => state.currentScreen.pageId);
+
+  const optionsAnswers = useSelector((state: RootState) => {
+    return state.answersSlice.map((item) => {
+      if (Array.isArray(item.value)) {
+        return item.value.map((el) => el.guid);
+      } else {
+        return item.value.guid;
+      }
+    });
+  });
+
   const dispatch = useDispatch();
   return (
     <Layout direction="column">
@@ -30,37 +41,49 @@ export function PageScreen(props: IScreen) {
         </Text>
       </Layout>
       {questions.map((question) => {
-        switch (question.type) {
-          case TypeQuestion.Checkbox:
-            return (
-              <div key={question.guid}>
-                <CheckboxTemplate {...question} mode={TypeModeComponent.Prod} />
-              </div>
-            );
+        if (
+          optionsAnswers.find((item) => item === question.parentGuid) ||
+          question.parentGuid === null
+        ) {
+          console.log(`OK`);
+          switch (question.type) {
+            case TypeQuestion.Checkbox:
+              return (
+                <div key={question.guid}>
+                  <CheckboxTemplate
+                    {...question}
+                    mode={TypeModeComponent.Prod}
+                  />
+                </div>
+              );
 
-          case TypeQuestion.Range:
-            return (
-              <div key={question.guid}>
-                <RangeTemplate {...question} mode={TypeModeComponent.Prod} />
-              </div>
-            );
+            case TypeQuestion.Range:
+              return (
+                <div key={question.guid}>
+                  <RangeTemplate {...question} mode={TypeModeComponent.Prod} />
+                </div>
+              );
 
-          case TypeQuestion.Input:
-            return (
-              <div key={question.guid}>
-                <InputTemplate {...question} mode={TypeModeComponent.Prod} />
-              </div>
-            );
+            case TypeQuestion.Input:
+              return (
+                <div key={question.guid}>
+                  <InputTemplate {...question} mode={TypeModeComponent.Prod} />
+                </div>
+              );
 
-          case TypeQuestion.Сondition:
-            return (
-              <div key={question.guid}>
-                <СonditionTemplate {...question} mode={TypeModeComponent.Prod} />
-              </div>
-            );
+            case TypeQuestion.Сondition:
+              return (
+                <div key={question.guid}>
+                  <СonditionTemplate
+                    {...question}
+                    mode={TypeModeComponent.Prod}
+                  />
+                </div>
+              );
 
-          default:
-            return <></>;
+            default:
+              return <></>;
+          }
         }
       })}
       <Layout style={{ marginTop: "20px" }}>
